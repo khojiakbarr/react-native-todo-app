@@ -17,6 +17,7 @@ const useTodoStore = create((set, get) => ({
     }
   },
 
+  
   addTodo: (todo) => {
     set((state) => ({
       todos: [
