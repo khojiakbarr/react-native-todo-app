@@ -1,23 +1,51 @@
 import { uid } from "uid";
 import { create } from "zustand";
+import { showConfirm } from "../src/components/showConfirm";
+import { getData, saveData } from "../utils/memory";
 
 const useTodoStore = create((set, get) => ({
   todos: [
-    { id: 1, title: "Wash Car" },
-    { id: 2, title: "Feeding Dogs" },
-    { id: 3, title: "Feeding Cats" },
-    { id: 4, title: "Rigind books" },
+    // {
+    //   id: 1,
+    //   task: "Wash Car",
+    //   createdAt: "December 27 at 4:47:08 PM",
+    //   isCompleted: false,
+    //   isEditing: false,
+    // },
+    // {
+    //   id: 2,
+    //   task: "Feeding Dogs",
+    //   createdAt: "December 27 at 4:47:08 PM",
+    //   isCompleted: true,
+    //   isEditing: true,
+    // },
+    // {
+    //   id: 3,
+    //   task: "Feeding Cats",
+    //   createdAt: "December 27 at 4:47:08 PM",
+    //   isCompleted: false,
+    //   isEditing: false,
+    // },
+    // {
+    //   id: 4,
+    //   task: "Rigind books",
+    //   createdAt: "December 27 at 4:47:08 PM",
+    //   isCompleted: false,
+    //   isEditing: false,
+    // },
   ],
+  id: "",
   getTodos: async () => {
     const data = await getData("todos");
+    console.log(data);
+
     if (data) {
-      set([JSON.parse(data)]);
+      set((state) => ({ todos: JSON.parse(data) }));
     } else {
       set([]);
     }
   },
 
-  
   addTodo: (todo) => {
     set((state) => ({
       todos: [
@@ -27,17 +55,28 @@ const useTodoStore = create((set, get) => ({
           id: uid(),
           isCompleted: false,
           isEditing: false,
-          createdAt: new Date().getFullYear().toString(),
+          createdAt: new Date().toLocaleString("en", {
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+          }),
         },
       ],
     }));
-    // saveData("todos", JSON.stringify(get().todos));
+    console.log(get().todos);
+
+    saveData("todos", JSON.stringify(get().todos));
   },
 
-  removeTodo: (id) => {
-    set((state) => ({
-      todos: state.todos.filter((todo) => todo.id !== id),
-    }));
+  removeTodo: async (id) => {
+    const isConfirmed = await showConfirm("Are you deleting this item?");
+    if (isConfirmed) {
+      set((state) => ({
+        todos: state.todos.filter((todo) => todo.id !== id),
+      }));
+    }
   },
 
   editTodo: (id, newTask) => {
@@ -51,7 +90,7 @@ const useTodoStore = create((set, get) => ({
   toggleTodo: (id) => {
     set((state) => ({
       todos: state.todos.map((todo) =>
-        todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo
+        todo.id == id ? { ...todo, isCompleted: !todo.isCompleted } : todo
       ),
     }));
   },
@@ -59,7 +98,7 @@ const useTodoStore = create((set, get) => ({
   toggleEditing: (id) => {
     set((state) => ({
       todos: state.todos.map((todo) =>
-        todo.id === id ? { ...todo, isEditing: !todo.isEditing } : todo
+        todo.id === id ? { ...todo, isEditing: true } : todo
       ),
     }));
   },
@@ -72,6 +111,10 @@ const useTodoStore = create((set, get) => ({
 
   clearAll: () => {
     set({ todos: [] });
+  },
+
+  saveId: (id) => {
+    set({ id });
   },
 }));
 

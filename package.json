@@ -10,11 +10,16 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.1.0",
+    "@react-native-vector-icons/common": "^11.0.0",
+    "@react-native-vector-icons/evil-icons": "^1.10.1",
+    "@react-native-vector-icons/fontawesome6": "^6.7.1",
+    "babel-plugin-optional-require": "^0.3.1",
     "expo": "~52.0.23",
     "expo-status-bar": "~2.0.0",
     "react": "18.3.1",
     "react-native": "0.76.5",
     "react-native-paper": "^5.12.5",
+    "react-native-vector-icons": "^10.2.0",
     "uid": "^2.0.2",
     "zustand": "^5.0.2"
   },
